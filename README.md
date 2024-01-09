@@ -1,4 +1,4 @@
-# sc-hc-legal-data
+# legaldata
 
 ## About
 This repository is for obtaining legal data for the Mizuho Securities HC Department.
