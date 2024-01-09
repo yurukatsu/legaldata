@@ -1,0 +1,11 @@
+{
+    "url": "https://elaws.e-gov.go.jp/api/1/lawdata/昭和二十一年憲法",
+    "extension": "xml",
+    "category": "e-Gov",
+    "name": "e-Gov",
+    "description": "e-Gov法令データ",
+    "law_id": "321CONSTITUTION",
+    "law_name": "日本国憲法",
+    "law_number": "昭和二十一年憲法",
+    "promulgation_date": "19461103"
+}
