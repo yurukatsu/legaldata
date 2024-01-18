@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 from typing import List, Literal, NewType, Optional, TypeAlias
 
 from bs4 import BeautifulSoup
@@ -125,3 +126,71 @@ class SESCHoudouLoader(BaseLoader):
             )
             for e in soup.select(selector)
         ]
+
+
+class SESCJireiLink(BaseLink):
+    """
+    Link to SESC Jirei.
+    """
+    description: str = "SESC事例"
+    category: str = "SESC"
+    name: str = "SESC事例"
+    extension: str = "pdf"
+    title: str = Field(description="タイトル", exclude=False)
+
+class SESCJireiLoader(BaseLoader):
+    """
+    Loader for SESC Jirei.
+    """
+    base_url: str = "https://www.fsa.go.jp"
+    start_url: str = "https://www.fsa.go.jp/sesc/jirei/index.html"
+
+    @property
+    def url(self) -> str:
+        """
+        Get URL.
+
+        Returns:
+            str: URL.
+        """
+        return self.start_url
+
+    def get_links(self) -> List[SESCJireiLink]:
+        """
+        Get links to data.
+
+        Returns:
+            List[SESCJireiLink]: List of links to data.
+        """
+        content = get_content(self.url)
+        soup = BeautifulSoup(content, "html.parser")
+        # extract links
+        selector = "div#main div.inner li a"
+        elements = soup.select(selector)
+        text_link_pairs = [(e.get_text(), e.get("href")) for e in elements]
+
+        links = []
+        for text, link in text_link_pairs:
+            if Path(link).suffix == ".html":
+                _content = get_content(format_url(link, self.base_url))
+                _soup = BeautifulSoup(_content, "html.parser")
+                _selector = 'div#main div.inner p.indent:first-child a'
+                links.append(
+                    SESCJireiLink(
+                        url=format_url(
+                            _soup.select(_selector)[0].get("href"), self.base_url
+                        ),
+                        title=text,
+                    )
+                )
+            elif Path(link).suffix == ".pdf":
+                links.append(
+                    SESCJireiLink(
+                        url=format_url(link, self.base_url),
+                        title=text,
+                    )
+                )
+            else:
+                raise ValueError(f"Unexpected link: {link}")
+        return links
+
