@@ -132,16 +132,19 @@ class SESCJireiLink(BaseLink):
     """
     Link to SESC Jirei.
     """
+
     description: str = "SESC事例"
     category: str = "SESC"
     name: str = "SESC事例"
     extension: str = "pdf"
     title: str = Field(description="タイトル", exclude=False)
 
+
 class SESCJireiLoader(BaseLoader):
     """
     Loader for SESC Jirei.
     """
+
     base_url: str = "https://www.fsa.go.jp"
     start_url: str = "https://www.fsa.go.jp/sesc/jirei/index.html"
 
@@ -171,10 +174,10 @@ class SESCJireiLoader(BaseLoader):
 
         links = []
         for text, link in text_link_pairs:
-            if Path(link).suffix == ".html":
+            if link.endswith(".html"):
                 _content = get_content(format_url(link, self.base_url))
                 _soup = BeautifulSoup(_content, "html.parser")
-                _selector = 'div#main div.inner p.indent:first-child a'
+                _selector = "div#main div.inner p.indent:first-child a"
                 links.append(
                     SESCJireiLink(
                         url=format_url(
@@ -183,7 +186,7 @@ class SESCJireiLoader(BaseLoader):
                         title=text,
                     )
                 )
-            elif Path(link).suffix == ".pdf":
+            elif link.endswith(".pdf"):
                 links.append(
                     SESCJireiLink(
                         url=format_url(link, self.base_url),
@@ -193,4 +196,3 @@ class SESCJireiLoader(BaseLoader):
             else:
                 raise ValueError(f"Unexpected link: {link}")
         return links
-
