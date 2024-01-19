@@ -3,8 +3,8 @@ from typing import List, Literal, TypeAlias, Union
 from bs4 import BeautifulSoup
 from pydantic import Field
 
-from legaldata.loader import BaseLink, BaseLoader, get_content
 from legaldata.formatter import format_url
+from legaldata.loader import BaseLink, BaseLoader, get_content
 from legaldata.loader.base import BaseLink
 
 
@@ -12,6 +12,7 @@ class DIRReportSiteLink(BaseLink):
     """
     Link to Daiwa Institute of Research (DIR) site.
     """
+
     description: str = "大和総研レポート"
     category: str = "大和総研"
     name: str = "大和総研レポート"
@@ -24,10 +25,12 @@ class DIRReportLink(BaseLink):
     """
     Link to Daiwa Institute of Research (DIR) data.
     """
+
     description: str = "大和総研レポート"
     category: str = "大和総研"
     name: str = "大和総研レポート"
     extension: str = "pdf"
+
 
 DIRReportKeywords: List[str] = [
     "policy-analysis",
@@ -66,7 +69,9 @@ class DIRReportLoader(BaseLoader):
     """
 
     base_url: str = "https://www.dir.co.jp"
-    url_template: str = "https://www.dir.co.jp/report/research/{keyword}/{sub_keyword}/{yyyy}.html"
+    url_template: str = (
+        "https://www.dir.co.jp/report/research/{keyword}/{sub_keyword}/{yyyy}.html"
+    )
 
     def __init__(
         self,
